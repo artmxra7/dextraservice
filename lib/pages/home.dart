@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 void main() => runApp(Home());
 
@@ -7,6 +8,7 @@ class Home extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    
 
   SystemChrome.setPreferredOrientations([
   DeviceOrientation.portraitDown,
@@ -16,7 +18,8 @@ class Home extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Dextra',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        fontFamily: 'MaisonNeue',
+        backgroundColor: Colors.white,
       ),
       home: MyHomePage(title: 'Dextra Service'),
     );
@@ -76,7 +79,7 @@ class Akun extends StatelessWidget {
         ),
         title: Text(
           "User Name",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'MaisonNeue'),
         ),
       //   subtitle: Row(
       //     children: <Widget>[
@@ -161,8 +164,8 @@ class MenuUtamaItems extends StatelessWidget {
       
       children: <Widget>[
         Container(
-            width: 80.0,
-            height: 80.0,
+            width: 50.0,
+            height: 50.0,
             decoration: BoxDecoration(
               color: colorBox,
               shape: BoxShape.circle,
@@ -176,6 +179,7 @@ class MenuUtamaItems extends StatelessWidget {
           child: Text(
             title,
             style: TextStyle(
+              
               fontSize: 12.0,
             ),
             textAlign: TextAlign.center,

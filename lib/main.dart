@@ -1,5 +1,6 @@
 
 import 'package:dextraservice/home_user.dart';
+import 'package:dextraservice/pages/OnBoarding.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:dextraservice/pages/profile.dart';
@@ -77,7 +78,7 @@ class _HomeState extends State<Home> {
       //     MaterialPageRoute(builder: (context) => DashboardPartner()));
     } else {
       Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => Dashboard()));
+          .pushReplacement(MaterialPageRoute(builder: (context) => onBoarding()));
     }
   }
 }
