@@ -9,6 +9,7 @@
 .history
 .svn/
 ./lib/Library
+/lib/Library
 
 # IntelliJ related
 *.iml
