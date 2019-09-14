@@ -1,157 +1,156 @@
-
-import 'package:dextraservice/home_user.dart';
-import 'package:dextraservice/pages/OnBoarding.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:dextraservice/pages/profile.dart';
-import 'package:dextraservice/pages/home.dart';
-import 'package:dextraservice/pages/history.dart';
-import 'package:dextraservice/pages/pesanan.dart';
-import 'package:dextraservice/pages/simpan.dart';
-
-import 'package:dextraservice/global_variable/variable_global.dart';
-import 'package:dextraservice/pra_home/prahome.dart';
-import 'package:location/location.dart';
 import 'dart:async';
 
+import 'package:dextraservice/pages/OnBoarding.dart';
+import 'package:dextraservice/pages/login.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
+/// Run first apps open
 void main() {
-  runApp(MaterialApp(
-    home: Home(),
-    debugShowCheckedModeBanner: false,
-  ));
+  runApp(myApp());
 }
 
-
-
-class Home extends StatefulWidget {
-  @override
-  _HomeState createState() => _HomeState();
-}
-
-
-class _HomeState extends State<Home> {
+/// Set orienttation
+class myApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: new BoxDecoration(
-          gradient: new LinearGradient(
-              begin: FractionalOffset.topCenter,
-              end: FractionalOffset.bottomCenter,
-              colors: [VariableGlobal.PARRENT_COLOR, Color(0xff01A2F1)])),
-      child: SizedBox(
-        width: 150,
-        child: new Image.asset(
-          "images/logo.png",
-          width: 100.0,
-          height: 100.0,
-        ),
-      ),
+    /// To set orientation always portrait
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    /// Set color status bar
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
+      statusBarColor: Colors.transparent, //or set color with: Color(0xFF0000FF)
+    ));
+    return new MaterialApp(
+      title: "Dextra App",
+      theme: ThemeData(
+          brightness: Brightness.light,
+          backgroundColor: Colors.white,
+          primaryColorLight: Colors.white,
+          primaryColorBrightness: Brightness.light),
+      debugShowCheckedModeBanner: false,
+      home: SplashScreen(),
+      /// Move splash screen to ChoseLogin Layout
+      /// Routes
+      routes: <String, WidgetBuilder>{
+        "login": (BuildContext context) => new onBoarding()
+      },
     );
   }
+}
+
+/// Component UI
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+/// Component UI
+class _SplashScreenState extends State<SplashScreen> {  
 
   @override
-  void initState() {
-    super.initState();
-    loadData();
+  /// Setting duration in splash screen
+  startTime() async {
+    return new Timer(Duration(milliseconds: 4500), onDoneLoading);
   }
 
-  Future<Timer> loadData() async {
-    return new Timer(Duration(seconds: 2), onDoneLoading);
-  }
+  /// Checked Login or Not
 
   onDoneLoading() async {
     final prefs = await SharedPreferences.getInstance();
     final myBool = prefs.getBool('isLogin');
     final userType = prefs.getString('userType');
     final token = prefs.getString('token');
-    print("Posisi Anda   $myBool");
-    if (myBool == "") {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => PraHome()));
+    final _seen = prefs.getBool('seen');
+    
+    print("Posisi Anda $myBool $_seen");
+    
+    if (myBool == "" && _seen == "") {
+      prefs.setBool('seen', true);
+      print("Posisi Anda   $_seen");
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => onBoarding()));
+    } else if (myBool == false && _seen == true) {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => loginScreen()));
     } else if (myBool == true && userType == "user") {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => Dashboard()));
-    } else if (myBool == true && userType == "partner") {
-      // Navigator.of(context).pushReplacement(
-      //     MaterialPageRoute(builder: (context) => DashboardPartner()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => onBoarding()));
+    } else if (_seen == true) {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => loginScreen()));
     } else {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => onBoarding()));
+      prefs.setBool('seen', true);
+      print("Posisi Anda   $_seen");
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => onBoarding()));
     }
   }
-}
-class MyApp extends StatelessWidget {
+
+  /// Declare startTime to InitState
   @override
-  Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-   DeviceOrientation.portraitDown,
-   DeviceOrientation.portraitUp,
-]);
-
-    return new MaterialApp(
-      title: 'Dextra Service',
-      theme: new ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: new MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-
-  @override
-  _MyHomePageState createState() => new _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0;
-
-  final _layoutPage= [
-    Home(),
-    Simpan(),
-    Pesanan(),
-    Profile()
-  ];
-
-  void _onTabItem(int index){
-    setState(() {
-          _selectedIndex = index;
-        });
+  void initState() {
+    super.initState();
+    startTime();
   }
 
-  @override
+  /// Code Create UI Splash Screen
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _layoutPage.elementAt(_selectedIndex),
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Home')
+      backgroundColor: Colors.white,
+      body: Container(
+        /// Set Background image in splash screen layout (Click to open code)
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('assets/img/man.png'), fit: BoxFit.cover)),
+        child: Container(
+          /// Set gradient black in image splash screen (Click to open code)
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [
+                    Color.fromRGBO(0, 0, 0, 0.3),
+                    Color.fromRGBO(0, 0, 0, 0.4)
+                  ],
+                  begin: FractionalOffset.topCenter,
+                  end: FractionalOffset.bottomCenter)),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(top: 30.0),
+                    ),
+                    /// Text header "Welcome To" (Click to open code)
+                    Text(
+                      "Welcome to",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w200,
+                        fontFamily: "Sans",
+                        fontSize: 19.0,
+                      ),
+                    ),
+                    /// Animation text Treva Shop to choose Login with Hero Animation (Click to open code)
+                    Hero(
+                      tag: "Dextra",
+                      child: Text(
+                        "Dextra App",
+                        style: TextStyle(
+                          fontFamily: 'Sans',
+                          fontWeight: FontWeight.w900,
+                          fontSize: 35.0,
+                          letterSpacing: 0.4,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.save),
-            title: Text('Simpan')
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.view_agenda),
-            title: Text('Pemesanan')
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            title: Text('History')
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            title: Text('Akun Saya')
-          ),
-        ],
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        onTap: _onTabItem,
+        ),
       ),
     );
   }

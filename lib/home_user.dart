@@ -79,20 +79,16 @@ class _DashboardState extends State<Dashboard> {
             title: Text('Home')
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.save),
-            title: Text('Simpan')
+            icon: Icon(Icons.assignment),
+            title: Text('Quotes')
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.view_agenda),
-            title: Text('Pemesanan')
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            title: Text('History')
+            icon: Icon(Icons.shopping_cart),
+            title: Text('Cart')
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
-            title: Text('Akun Saya')
+            title: Text('Account')
           ),
         ],
         

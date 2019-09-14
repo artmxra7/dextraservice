@@ -58,7 +58,7 @@ final pages = [
       body: Container(
         height: 250.0,
         child: Text(
-            'Choose Items wherever you are with this application to make life easier',textAlign: TextAlign.center,
+            'Easy Choose Item you Want',textAlign: TextAlign.center,
             style: _fontDescriptionStyle
         ),
       ),
@@ -79,7 +79,7 @@ final pages = [
       body: Container(
         height: 250.0,
         child: Text(
-            'Shop from thousand brands in the world \n in one application at throwaway \nprices ',textAlign: TextAlign.center,
+            'Buy the item',textAlign: TextAlign.center,
             style: _fontDescriptionStyle
         ),
       ),
