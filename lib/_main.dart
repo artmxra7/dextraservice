@@ -93,7 +93,7 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       title: 'Dextra Service',
       theme: new ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.white,
       ),
       home: new MyHomePage(),
     );

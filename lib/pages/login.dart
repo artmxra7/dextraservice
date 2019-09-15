@@ -1,24 +1,96 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:dextraservice/global_variable/variable_global.dart';
+import 'package:dextraservice/home_user.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:dextraservice/pages/LoginAnimation.dart';
 import 'package:dextraservice/pages/signup.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class loginScreen extends StatefulWidget {
   @override
   _loginScreenState createState() => _loginScreenState();
 }
+
+
 /// Component Widget this layout UI
 class _loginScreenState extends State<loginScreen>
     with TickerProviderStateMixin {
+
   //Animation Declaration
   AnimationController sanimationController;
+  static const  VariableGlobals = VariableGlobal.URL_BASE;
+
+  TextEditingController email = new TextEditingController();
+  TextEditingController password = new TextEditingController();
+  Map<String, double> currentLocation = new Map();
+  StreamSubscription<Map<String, double>> locationSubscription;
+  Location location = new Location();
+  String error;
 
   var tap = 0;
 
-  @override
+  void _alertdialog(String str) {
+    if (str.isEmpty) return;
 
+    AlertDialog alertDialog = new AlertDialog(
+      content: new Text(
+        str,
+        style: new TextStyle(fontSize: 20.0),
+      ),
+      actions: <Widget>[
+        new RaisedButton(
+          color: Colors.purple,
+          child: new Text("OK"),
+          onPressed: () {
+            //ketika button di klik maka akan dismis dialog
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    );
+
+    showDialog(context: context, child: alertDialog);
+  }
+
+  Future<List> _login() async {
+    print("OKE");
+
+    final responseLogin =
+        await http.post("${VariableGlobals}api/auth/login", body: {
+      "email": email.text,
+      "password": password.text,
+      "longitude": currentLocation['longitude'].toString(),
+      "latitude": currentLocation['latitude'].toString(),
+    }
+   
+    );
+    
+//    var status = responseLogin.body.contains("error");
+    var dataResponse = json.decode(responseLogin.body);
+    var data = dataResponse["data"];
+    if (dataResponse["code"] == 0 && data["user_type"] == "user") {
+      print("data token : ${dataResponse["code"]}");
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => Dashboard()));
+    }  else {
+      _alertdialog("gagal login");
+    }
+
+    print("data status : ${responseLogin.statusCode}");
+    print("data body : ${responseLogin.body}");
+    print("data token : ${data["token"]}");
+    print("data code : ${data["code"]}");
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('token', data["token"]);
+    prefs.setString('userType', data["user_type"]);
+    prefs.setBool('isLogin', true);
+  }
+  @override
   /// set state animation controller
   void initState() {
     sanimationController =
@@ -30,8 +102,19 @@ class _loginScreenState extends State<loginScreen>
               });
             }
           });
-    // TODO: implement initState
+          
     super.initState();
+
+    currentLocation['latitude'] = 0.0;
+    currentLocation['longitude'] = 0.0;
+
+    initPlatformState();
+    locationSubscription =
+        location.onLocationChanged().listen((Map<String, double> result) {
+      setState(() {
+        currentLocation = result;
+      });
+    });
   }
 
   /// Dispose animation controller
@@ -49,6 +132,17 @@ class _loginScreenState extends State<loginScreen>
     } on TickerCanceled {}
   }
 
+  void initPlatformState() async {
+    Map<String, double> lokasi;
+    try {
+      lokasi = await location.getLocation();
+      error = "";
+    } catch (e) {}
+    setState(() {
+      currentLocation = lokasi;
+    });
+  }
+
   /// Component Widget layout UI
   @override
   Widget build(BuildContext context) {
@@ -62,7 +156,7 @@ class _loginScreenState extends State<loginScreen>
         /// Set Background image in layout (Click to open code)
         decoration: BoxDecoration(
             image: DecorationImage(
-          image: AssetImage("assets/img/loginscreenbackground.png"),
+          image: AssetImage("assets/img/backgroundgirl.png"),
           fit: BoxFit.cover,
         )),
         child: Container(
@@ -97,26 +191,15 @@ class _loginScreenState extends State<loginScreen>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Image(
-                                  image: AssetImage("assets/img/Logo.png"),
+                                  image: AssetImage("images/logo.png"),
                                   height: 70.0,
                                 ),
                                 Padding(
                                     padding:
-                                        EdgeInsets.symmetric(horizontal: 10.0)),
+                                        EdgeInsets.symmetric(horizontal: 30.0)),
 
-                                /// Animation text treva shop accept from signup layout (Click to open code)
-                                Hero(
-                                  tag: "Treva",
-                                  child: Text(
-                                    "Treva Shop",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w900,
-                                        letterSpacing: 0.6,
-                                        color: Colors.white,
-                                        fontFamily: "Sans",
-                                        fontSize: 20.0),
-                                  ),
-                                ),
+                             
+                              
                               ],
                             ),
 
@@ -149,6 +232,7 @@ class _loginScreenState extends State<loginScreen>
                               icon: Icons.email,
                               password: false,
                               email: "Email",
+                              myController: email,
                               inputType: TextInputType.emailAddress,
                             ),
 
@@ -158,7 +242,7 @@ class _loginScreenState extends State<loginScreen>
                             textFromField(
                               icon: Icons.vpn_key,
                               password: true,
-                              email: "Password",
+                              myController: password,
                               inputType: TextInputType.text,
                             ),
 
@@ -194,14 +278,8 @@ class _loginScreenState extends State<loginScreen>
                       ? InkWell(
                           splashColor: Colors.yellow,
                           onTap: () {
-                            setState(() {
-                              tap = 1;
-                            });
-                            new LoginAnimation(
-                              animationController: sanimationController.view,
-                            );
-                            _PlayAnimation();
-                            return tap;
+                            _login();
+                            
                           },
                           child: buttonBlackBottom(),
                         )
@@ -222,10 +300,12 @@ class _loginScreenState extends State<loginScreen>
 class textFromField extends StatelessWidget {
   bool password;
   String email;
+  final myController;
+  
   IconData icon;
   TextInputType inputType;
 
-  textFromField({this.email, this.icon, this.inputType, this.password});
+  textFromField({this.email, this.icon, this.inputType, this.password, this.myController});
 
   @override
   Widget build(BuildContext context) {
@@ -246,6 +326,7 @@ class textFromField extends StatelessWidget {
           ),
           child: TextFormField(
             obscureText: password,
+            controller: myController,
             decoration: InputDecoration(
                 border: InputBorder.none,
                 labelText: email,

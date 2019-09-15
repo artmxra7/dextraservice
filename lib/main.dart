@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dextraservice/home_user.dart';
 import 'package:dextraservice/pages/OnBoarding.dart';
 import 'package:dextraservice/pages/login.dart';
 import 'package:flutter/material.dart';
@@ -76,7 +77,7 @@ class _SplashScreenState extends State<SplashScreen> {
     } else if (myBool == false && _seen == true) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => loginScreen()));
     } else if (myBool == true && userType == "user") {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => onBoarding()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Dashboard()));
     } else if (_seen == true) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => loginScreen()));
     } else {

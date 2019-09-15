@@ -6,11 +6,31 @@ class Simpan extends StatefulWidget {
 }
 
 class _SimpanState extends State<Simpan> {
-  @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text('Simpan'),
-      
+     return Scaffold(
+      appBar: AppBar(
+            iconTheme: IconThemeData(color: Color(0xFF6991C7)),
+            centerTitle: true,
+            backgroundColor: Colors.white,
+            title: Text(
+              "Quotes",
+              style: TextStyle(
+                  fontFamily: "Gotik",
+                  fontSize: 18.0,
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w700),
+            ),
+            elevation: 0.0,
+          ),
+
+          body: ListView(
+
+          ), 
+          ///
+          ///
+          /// Checking item value of cart
+          ///
+          /// noItem
     );
   }
 }
