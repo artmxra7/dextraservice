@@ -24,7 +24,7 @@ class _CardAccountState extends  State<CardAccount> {
 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    String url = "http://192.168.1.5:9000/api/user/profile";
+    String url = "https://dextra.hattadev.com/public/api/user/profile";
 
     http.Response hasil = await http.get(
       Uri.encodeFull(url),

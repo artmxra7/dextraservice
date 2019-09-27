@@ -1,3 +1,4 @@
+import 'package:dextraservice/pages/mekanik.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/allProduct.dart';
@@ -5,33 +6,32 @@ import '../pages/screen.dart';
 
 List<MainMenuItem> mainMenuItem = [
   MainMenuItem(
-      title: 'Flights',
-      icon: Icons.flight,
+      title: 'Mechanic',
+      icon: IconData(0xe801, fontFamily: 'mechanic'),
       colorBox: Colors.blue,
       iconColor: Colors.white,
-      screenTitle: 'Search Flights',
-      screenContent: 'Pencarian Penerbangan'),
+      screenWidget: Mekanik()),
   MainMenuItem(
-      title: 'Hotels',
-      icon: Icons.hotel,
+      title: 'Spareparts',
+      icon: IconData(0xe801, fontFamily: 'carparts'),
       colorBox: Colors.blue[900],
       iconColor: Colors.white,
-      screenTitle: 'Search Hotels',
-      screenContent: 'Pencarian Hotel'),
+      screenTitle: 'Spareparts',
+      screenContent: 'Maaf Data Belum Tersedia'),
   MainMenuItem(
-      title: 'Flight + Hotel',
-      icon: Icons.flight_land,
+      title: 'Equipment',
+      icon: IconData(0xe802, fontFamily: 'equipment'),
       colorBox: Colors.purple,
       iconColor: Colors.white,
-      screenTitle: 'Search Flight + Hotel',
-      screenContent: 'Pencarian Pesawan + Hotel'),
+      screenTitle: 'Equipment',
+      screenContent: 'Maaf Data Belum Tersedia'),
   MainMenuItem(
-      title: 'Attractions & Activities',
-      icon: Icons.local_play,
+      title: 'Rental',
+      icon: IconData(0xe800, fontFamily: 'rental'),
       colorBox: Colors.green[300],
       iconColor: Colors.white,
-      screenTitle: 'Attractions & Activities',
-      screenContent: 'Aktivitas')
+      screenTitle: 'Rental',
+      screenContent: 'Maaf Data Belum Tersedia')
 //   MainMenuItem(
 //       title: 'Eats',
 //       icon: Icons.local_dining,

@@ -43,23 +43,11 @@ class News extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.elliptical(20.0, 20.0),
-                          bottomRight: Radius.elliptical(150.0, 150.0)
-                        )
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 2.0, left: 5.0, right: 30.0, bottom: 30.0),
-                        child: Text('%', style: TextStyle(fontSize: 24.0,color: Colors.white),),
-                      ),
-                    ),
+                   
                     Expanded(child: Container(),),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text('Lihat Semua \nPromo', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white, fontSize: 18.0),),
+                      child: Text('See all \nNews', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white, fontSize: 18.0),),
                     )
                   ],
                 ),

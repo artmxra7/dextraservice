@@ -49,7 +49,7 @@ class _MyHomePageState extends State<Home> {
             CardAccount(),          
             MainMenu(),
             Divider(),
-            Promotion(),
+            //Promotion(),
             News(),
           ],
         ),

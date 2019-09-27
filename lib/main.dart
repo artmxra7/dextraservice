@@ -10,21 +10,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 /// Run first apps open
 void main() {
-  runApp(myApp());
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_){
+    runApp(MyApp());
+  });
 }
 
 /// Set orienttation
-class myApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    /// To set orientation always portrait
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
     /// Set color status bar
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
-      statusBarColor: Colors.transparent, //or set color with: Color(0xFF0000FF)
+      statusBarColor: Colors.transparent,
     ));
     return new MaterialApp(
       title: "Dextra App",
@@ -35,11 +32,6 @@ class myApp extends StatelessWidget {
           primaryColorBrightness: Brightness.light),
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
-      /// Move splash screen to ChoseLogin Layout
-      /// Routes
-      routes: <String, WidgetBuilder>{
-        "login": (BuildContext context) => new onBoarding()
-      },
     );
   }
 }
@@ -54,7 +46,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {  
 
   @override
-  /// Setting duration in splash screen
   startTime() async {
     return new Timer(Duration(milliseconds: 4500), onDoneLoading);
   }
@@ -67,8 +58,6 @@ class _SplashScreenState extends State<SplashScreen> {
     final userType = prefs.getString('userType');
     final token = prefs.getString('token');
     final _seen = prefs.getBool('seen');
-    
-    print("Posisi Anda $myBool $_seen");
     
     if (myBool == "" && _seen == "") {
       prefs.setBool('seen', true);
@@ -97,22 +86,11 @@ class _SplashScreenState extends State<SplashScreen> {
   /// Code Create UI Splash Screen
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       body: Container(
         /// Set Background image in splash screen layout (Click to open code)
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('assets/img/man.png'), fit: BoxFit.cover)),
         child: Container(
-          /// Set gradient black in image splash screen (Click to open code)
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [
-                    Color.fromRGBO(0, 0, 0, 0.3),
-                    Color.fromRGBO(0, 0, 0, 0.4)
-                  ],
-                  begin: FractionalOffset.topCenter,
-                  end: FractionalOffset.bottomCenter)),
+         
           child: Center(
             child: SingleChildScrollView(
               child: Container(

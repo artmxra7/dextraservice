@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:async';
-import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:dextraservice/global_variable/variable_global.dart';
 
 import 'package:dextraservice/pages/profile.dart';
 import 'package:dextraservice/pages/home.dart';

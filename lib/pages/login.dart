@@ -10,26 +10,23 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class loginScreen extends StatefulWidget {
   @override
   _loginScreenState createState() => _loginScreenState();
 }
 
-
 /// Component Widget this layout UI
-class _loginScreenState extends State<loginScreen>
-    with TickerProviderStateMixin {
-
+class _loginScreenState extends State<loginScreen> with TickerProviderStateMixin {
   //Animation Declaration
   AnimationController sanimationController;
-  static const  VariableGlobals = VariableGlobal.URL_BASE;
+  static const VariableGlobals = VariableGlobal.URL_BASE;
 
   TextEditingController email = new TextEditingController();
   TextEditingController password = new TextEditingController();
   Map<String, double> currentLocation = new Map();
-  StreamSubscription<Map<String, double>> locationSubscription;
-  Location location = new Location();
+  StreamSubscription<LocationData> _locationSubscription;
+  LocationData _currentLocation;
+  var _locationService = new Location();
   String error;
 
   var tap = 0;
@@ -53,7 +50,6 @@ class _loginScreenState extends State<loginScreen>
         ),
       ],
     );
-
     showDialog(context: context, child: alertDialog);
   }
 
@@ -61,36 +57,35 @@ class _loginScreenState extends State<loginScreen>
     print("OKE");
 
     final responseLogin =
-        await http.post("${VariableGlobals}api/auth/login", body: {
+        await http.post("https://dextra.hattadev.com/public/api/auth/login", body: {
       "email": email.text,
       "password": password.text,
       "longitude": currentLocation['longitude'].toString(),
       "latitude": currentLocation['latitude'].toString(),
-    }
-   
-    );
-    
-//    var status = responseLogin.body.contains("error");
+    });
+
     var dataResponse = json.decode(responseLogin.body);
     var data = dataResponse["data"];
     if (dataResponse["code"] == 0 && data["user_type"] == "user") {
       print("data token : ${dataResponse["code"]}");
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => Dashboard()));
-    }  else {
+    } else {
       _alertdialog("gagal login");
     }
 
     print("data status : ${responseLogin.statusCode}");
     print("data body : ${responseLogin.body}");
     print("data token : ${data["token"]}");
-    print("data code : ${data["code"]}");
+    
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('token', data["token"]);
     prefs.setString('userType', data["user_type"]);
     prefs.setBool('isLogin', true);
   }
+
   @override
+
   /// set state animation controller
   void initState() {
     sanimationController =
@@ -102,17 +97,17 @@ class _loginScreenState extends State<loginScreen>
               });
             }
           });
-          
+
     super.initState();
 
     currentLocation['latitude'] = 0.0;
     currentLocation['longitude'] = 0.0;
 
     initPlatformState();
-    locationSubscription =
-        location.onLocationChanged().listen((Map<String, double> result) {
+    _locationSubscription =
+         _locationService.onLocationChanged().listen((LocationData currentLocation) {
       setState(() {
-        currentLocation = result;
+        _currentLocation = currentLocation;
       });
     });
   }
@@ -133,13 +128,12 @@ class _loginScreenState extends State<loginScreen>
   }
 
   void initPlatformState() async {
-    Map<String, double> lokasi;
     try {
-      lokasi = await location.getLocation();
+      _currentLocation = await _locationService.getLocation();
       error = "";
     } catch (e) {}
     setState(() {
-      currentLocation = lokasi;
+     _currentLocation = null;
     });
   }
 
@@ -150,27 +144,11 @@ class _loginScreenState extends State<loginScreen>
     mediaQueryData.devicePixelRatio;
     mediaQueryData.size.width;
     mediaQueryData.size.height;
-    return Scaffold(
+    return new Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomPadding: false,
       body: Container(
-        /// Set Background image in layout (Click to open code)
-        decoration: BoxDecoration(
-            image: DecorationImage(
-          image: AssetImage("assets/img/backgroundgirl.png"),
-          fit: BoxFit.cover,
-        )),
         child: Container(
-          /// Set gradient color in image (Click to open code)
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color.fromRGBO(0, 0, 0, 0.0),
-                Color.fromRGBO(0, 0, 0, 0.3)
-              ],
-              begin: FractionalOffset.topCenter,
-              end: FractionalOffset.bottomCenter,
-            ),
-          ),
           /// Set component layout
           child: ListView(
             children: <Widget>[
@@ -178,56 +156,27 @@ class _loginScreenState extends State<loginScreen>
                 alignment: AlignmentDirectional.bottomCenter,
                 children: <Widget>[
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Container(
                         alignment: AlignmentDirectional.topCenter,
                         child: Column(
                           children: <Widget>[
-                            /// padding logo
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    top: mediaQueryData.padding.top + 40.0)),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Image(
-                                  image: AssetImage("images/logo.png"),
-                                  height: 70.0,
-                                ),
-                                Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 30.0)),
-
-                             
-                              
-                              ],
-                            ),
-
-                            /// ButtonCustomFacebook
-                            Padding(
-                                padding: EdgeInsets.symmetric(vertical: 30.0)),
-                            buttonCustomFacebook(),
-
-                            /// ButtonCustomGoogle
-                            Padding(
-                                padding: EdgeInsets.symmetric(vertical: 7.0)),
-                            buttonCustomGoogle(),
-                            /// Set Text
-                            Padding(
-                                padding: EdgeInsets.symmetric(vertical: 10.0)),
-                            Text(
-                              "OR",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white,
-                                  letterSpacing: 0.2,
-                                  fontFamily: 'Sans',
-                                  fontSize: 17.0),
+                            Container(
+                           padding: EdgeInsets.only(
+                                  top: mediaQueryData.padding.top + 50.0,
+                                  bottom: 0.0),
+                              child: Text(
+                                'Signin',
+                                style: TextStyle(
+                                    fontSize: 80.0,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
 
                             /// TextFromField Email
                             Padding(
-                                padding: EdgeInsets.symmetric(vertical: 10.0)),
+                                padding: EdgeInsets.symmetric(vertical: 20.0)),
                             textFromField(
                               icon: Icons.email,
                               password: false,
@@ -242,13 +191,14 @@ class _loginScreenState extends State<loginScreen>
                             textFromField(
                               icon: Icons.vpn_key,
                               password: true,
+                              email: "Password",
                               myController: password,
                               inputType: TextInputType.text,
                             ),
 
                             /// Button Signup
                             FlatButton(
-                                padding: EdgeInsets.only(top: 20.0),
+                                padding: EdgeInsets.only(top: 10.0),
                                 onPressed: () {
                                   Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
@@ -258,7 +208,7 @@ class _loginScreenState extends State<loginScreen>
                                 child: Text(
                                   "Not Have Acount? Sign Up",
                                   style: TextStyle(
-                                      color: Colors.white,
+                                      color: Colors.black,
                                       fontSize: 13.0,
                                       fontWeight: FontWeight.w600,
                                       fontFamily: "Sans"),
@@ -276,10 +226,8 @@ class _loginScreenState extends State<loginScreen>
                   /// Set Animaion after user click buttonLogin
                   tap == 0
                       ? InkWell(
-                          splashColor: Colors.yellow,
                           onTap: () {
                             _login();
-                            
                           },
                           child: buttonBlackBottom(),
                         )
@@ -301,11 +249,16 @@ class textFromField extends StatelessWidget {
   bool password;
   String email;
   final myController;
-  
+
   IconData icon;
   TextInputType inputType;
 
-  textFromField({this.email, this.icon, this.inputType, this.password, this.myController});
+  textFromField(
+      {this.email,
+      this.icon,
+      this.inputType,
+      this.password,
+      this.myController});
 
   @override
   Widget build(BuildContext context) {
@@ -314,10 +267,6 @@ class textFromField extends StatelessWidget {
       child: Container(
         height: 60.0,
         alignment: AlignmentDirectional.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14.0),
-            color: Colors.white,
-            boxShadow: [BoxShadow(blurRadius: 10.0, color: Colors.black12)]),
         padding:
             EdgeInsets.only(left: 20.0, right: 30.0, top: 0.0, bottom: 0.0),
         child: Theme(
@@ -328,96 +277,25 @@ class textFromField extends StatelessWidget {
             obscureText: password,
             controller: myController,
             decoration: InputDecoration(
-                border: InputBorder.none,
                 labelText: email,
                 icon: Icon(
                   icon,
                   color: Colors.black38,
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.green
+                  )
                 ),
                 labelStyle: TextStyle(
                     fontSize: 15.0,
                     fontFamily: 'Sans',
                     letterSpacing: 0.3,
                     color: Colors.black38,
-                    fontWeight: FontWeight.w600)),
+                    fontWeight: FontWeight.w600)
+                  ),
             keyboardType: inputType,
           ),
-        ),
-      ),
-    );
-  }
-}
-
-///buttonCustomFacebook class
-class buttonCustomFacebook extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-      child: Container(
-        alignment: FractionalOffset.center,
-        height: 49.0,
-        width: 500.0,
-        decoration: BoxDecoration(
-          color: Color.fromRGBO(107, 112, 248, 1.0),
-          borderRadius: BorderRadius.circular(40.0),
-          boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 15.0)],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset(
-              "assets/img/icon_facebook.png",
-              height: 25.0,
-            ),
-            Padding(padding: EdgeInsets.symmetric(horizontal: 7.0)),
-            Text(
-              "Login With Facebook",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: 'Sans'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-///buttonCustomGoogle class
-class buttonCustomGoogle extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-      child: Container(
-        alignment: FractionalOffset.center,
-        height: 49.0,
-        width: 500.0,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10.0)],
-          borderRadius: BorderRadius.circular(40.0),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset(
-              "assets/img/google.png",
-              height: 25.0,
-            ),
-            Padding(padding: EdgeInsets.symmetric(horizontal: 7.0)),
-            Text(
-              "Login With Google",
-              style: TextStyle(
-                  color: Colors.black26,
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: 'Sans'),
-            )
-          ],
         ),
       ),
     );
@@ -434,20 +312,23 @@ class buttonBlackBottom extends StatelessWidget {
         height: 55.0,
         width: 600.0,
         child: Text(
-          "Login",
+          "Signin",
           style: TextStyle(
-              color: Colors.white,
+              color: Colors.black,
               letterSpacing: 0.2,
               fontFamily: "Sans",
               fontSize: 18.0,
-              fontWeight: FontWeight.w800),
+              fontWeight: FontWeight.bold),
         ),
         alignment: FractionalOffset.center,
         decoration: BoxDecoration(
-            boxShadow: [BoxShadow(color: Colors.black38, blurRadius: 15.0)],
-            borderRadius: BorderRadius.circular(30.0),
-            gradient: LinearGradient(
-                colors: <Color>[Color(0xFF121940), Color(0xFF6E48AA)])),
+            borderRadius: BorderRadius.circular(20.0),
+            border: Border.all(
+              color: Colors.black,
+              style: BorderStyle.solid,
+              width: 1.0
+            ),
+            ),
       ),
     );
   }
