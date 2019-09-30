@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:dextraservice/pages/mekanik2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:location/location.dart' as prefix;
 
@@ -14,113 +12,17 @@ class Mekanik extends StatefulWidget {
 }
 
 class _MekanikState extends State<Mekanik> {
-  Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
 
-  GoogleMapController _mapController;
-  CameraPosition _position;
+  List<String> list = ['Dart', 'Java','C','C++','C#','Kotlin','JavaScript'];
+  String item = 'Dart';
 
-  int _markerIdCounter = 0;
-  prefix.LocationData currentLocation;
-
-  StreamSubscription<prefix.LocationData> _locationSubscription;
-  prefix.Location _locationService = new prefix.Location();
-  bool _permission = false;
-  String error;
-  String newLocationName;
-
-  String _placemark = '';
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _getCurrentLocation2();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  void _getCurrentLocation2() async {
-    _locationSubscription = _locationService
-        .onLocationChanged()
-        .listen((prefix.LocationData result) {
-      setState(() {
-        currentLocation = result;
-        print(currentLocation);
-      });
-      if (currentLocation != null) {
-        Future.delayed(Duration(milliseconds: 200), () async {
-          moveCameraToMyLocation();
-        });
-      }
-    });
-    prefix.LocationData myLocation;
-    try {
-      myLocation = await _locationService.getLocation();
-      print('myLocation $myLocation');
-    } on PlatformException catch (e) {
-      print(e);
-    }
-  }
-
-  void _onMapCreated(GoogleMapController controller) async {
-    this._mapController = controller;
-    MarkerId markerId = MarkerId(_markerIdVal());
-    LatLng position = LatLng(
-        currentLocation != null ? currentLocation.latitude : 0.0,
-        currentLocation != null ? currentLocation.longitude : 0.0);
-    Marker marker = Marker(
-      markerId: markerId,
-      position: position,
-      draggable: false,
-    );
+  void onChanged(String value) {
     setState(() {
-      _markers[markerId] = marker;
-    });
-
-    Future.delayed(Duration(milliseconds: 200), () async {
-      this._mapController = controller;
-      controller?.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: position,
-            zoom: 15.0,
-          ),
-        ),
-      );
+      item = value;
     });
   }
+ 
 
-  String _markerIdVal({bool increment = false}) {
-    String val = 'marker_id_$_markerIdCounter';
-    if (increment) _markerIdCounter++;
-    return val;
-  }
-
-  void getLocationName(double lat, double lng) async {
-    List<Placemark> placemarks =
-        await Geolocator().placemarkFromCoordinates(lat, lng);
-    if (placemarks != null && placemarks.isNotEmpty) {
-      final Placemark pos = placemarks[0];
-      setState(() {
-        _placemark = pos.name + ', ' + pos.thoroughfare;
-        newLocationName = _placemark;
-      });
-    }
-  }
-
-  void moveCameraToMyLocation() {
-    _mapController?.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: LatLng(currentLocation.latitude, currentLocation.longitude),
-          zoom: 17.0,
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +30,6 @@ class _MekanikState extends State<Mekanik> {
     mediaQueryData.devicePixelRatio;
     mediaQueryData.size.width;
     mediaQueryData.size.height;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -154,7 +55,11 @@ class _MekanikState extends State<Mekanik> {
                     padding: EdgeInsets.only(
                         top: mediaQueryData.padding.top + 20.0, bottom: 0.0)),
                 new ListTile(
-                  leading: const Icon(Icons.person),
+                  leading: const Icon(Icons.report_problem),
+                  title: example(),
+                ),
+                new ListTile(
+                  leading: const Icon(Icons.branding_watermark),
                   title: new TextField(
                     decoration: new InputDecoration(
                       hintText: "Brand",
@@ -162,7 +67,7 @@ class _MekanikState extends State<Mekanik> {
                   ),
                 ),
                 new ListTile(
-                  leading: const Icon(Icons.person),
+                  leading: const Icon(Icons.view_module),
                   title: new TextField(
                     decoration: new InputDecoration(
                       hintText: "Model",
@@ -170,7 +75,7 @@ class _MekanikState extends State<Mekanik> {
                   ),
                 ),
                 new ListTile(
-                  leading: const Icon(Icons.person),
+                  leading: const Icon(Icons.list),
                   title: new TextField(
                     decoration: new InputDecoration(
                       hintText: "Serial Number",
@@ -216,5 +121,27 @@ class _MekanikState extends State<Mekanik> {
         ),
       ),
     );
+  }
+
+  Widget example() {
+    return new DropdownButton(
+         
+          isExpanded: true,
+          value: item,
+          
+            
+            items: list.map((String val){
+              return DropdownMenuItem(
+                value: val,
+                child: Row(
+                  children: <Widget>[
+                    Text(val)
+                  ],
+                ),
+              );
+            }).toList(),
+            hint: new Text("Select City"),
+            onChanged: (String value) { onChanged(value); },
+        );
   }
 }

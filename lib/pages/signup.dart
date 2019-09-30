@@ -1,44 +1,95 @@
 import 'dart:async';
 
+import 'package:dextraservice/Model/response.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'package:dextraservice/helper/dialog.dart';
 import 'package:dextraservice/pages/LoginAnimation.dart';
 import 'package:dextraservice/pages/login.dart';
+import 'package:dextraservice/pages/otp_verification.dart';
 import 'package:flutter/material.dart';
-
+import 'package:progress_dialog/progress_dialog.dart';
 
 class SignUp extends StatefulWidget {
   @override
   _SignUpState createState() => _SignUpState();
 }
 
-class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
+class _SignUpState extends State<SignUp> {
   //Animation Declaration
   AnimationController sanimationController;
   AnimationController animationControllerScreen;
   Animation animationScreen;
   var tap = 0;
+      
 
-  /// Set AnimationController to initState
-  @override
-  void initState() {
-    sanimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 800))
-          ..addStatusListener((statuss) {
-            if (statuss == AnimationStatus.dismissed) {
-              setState(() {
-                tap = 0;
-              });
-            }
-          });
-    // TODO: implement initState
-    super.initState();
+  ProgressDialog pr;
+
+TextEditingController name = new TextEditingController();
+  TextEditingController email = new TextEditingController();
+  TextEditingController password = new TextEditingController();
+  TextEditingController passwordCon = new TextEditingController();
+  TextEditingController hp = new TextEditingController();
+
+  String verifikasi = "";
+  String requestId = "";
+  
+  Future<Default> _signUp() async {
+
+    pr = new ProgressDialog(context, ProgressDialogType.Normal);
+    pr.setMessage("Please wait....");
+    pr.show();
+    Map<String, String> requestHeaders = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded'
+    };
+    
+
+    final responseLogin =
+        await http.post("https://dextra.hattadev.com/public/api/user/register/step1", body: {
+      "email": email.text,
+      "password": password.text,
+      "password_confirmation": passwordCon.text,
+      "users_hp": hp.text,
+    },
+    headers: requestHeaders);
+
+    var response = json.decode(responseLogin.body);
+    var data = response["data"];
+
+  
+    print("PR status  ${pr.isShowing()}");
+    if (pr.isShowing()) pr.hide();
+    print("PR status  ${pr.isShowing()}");
+    print("REGISTER 1 JSON " + response.toString());
+
+    if (response["code"] == 0) {
+      requestId = response["data"]["request_id"];
+      print("sukses daftar");
+      print("REQUEST ID " + requestId);
+
+    if (requestId.isEmpty) {
+        alertDialog(context, "request id ga dapet");
+      } else {
+        Navigator.of(context).push(new MaterialPageRoute(
+          builder: (BuildContext context) => new otpverification(
+            name: name.text,
+                hp: hp.text,
+                email: email.text,
+                password: password.text,
+                passwordCon: passwordCon.text,
+                requestId: requestId,
+              ),
+        ));
+      }
+    } else {
+      alertDialog(context, "gagal Daftar");
+    }
+
+   
   }
 
-  /// Dispose animationController
-  @override
-  void dispose() {
-    super.dispose();
-    sanimationController.dispose();
-  }
 
   /// Playanimation set forward reverse
   Future<Null> _PlayAnimation() async {
@@ -47,6 +98,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
       await sanimationController.reverse();
     } on TickerCanceled {}
   }
+
   /// Component Widget layout UI
   @override
   Widget build(BuildContext context) {
@@ -56,27 +108,12 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
     mediaQueryData.size.width;
 
     return Scaffold(
+      backgroundColor: Colors.white,
+      resizeToAvoidBottomPadding: false,
       body: Stack(
         children: <Widget>[
           Container(
-            /// Set Background image in layout
-            decoration: BoxDecoration(
-                image: DecorationImage(
-              image: AssetImage("assets/img/backgroundgirl.png"),
-              fit: BoxFit.cover,
-            )),
             child: Container(
-              /// Set gradient color in image
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Color.fromRGBO(0, 0, 0, 0.2),
-                    Color.fromRGBO(0, 0, 0, 0.3)
-                  ],
-                  begin: FractionalOffset.topCenter,
-                  end: FractionalOffset.bottomCenter,
-                ),
-              ),
               /// Set component layout
               child: ListView(
                 padding: EdgeInsets.all(0.0),
@@ -90,30 +127,36 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                             alignment: AlignmentDirectional.topCenter,
                             child: Column(
                               children: <Widget>[
-                                /// padding logo
-                                Padding(
-                                    padding: EdgeInsets.only(
-                                        top:
-                                            mediaQueryData.padding.top + 30.0)),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Image(
-                                      image: AssetImage("images/logo.png"),
-                                      height: 100.0,
-                                    ),
-                                    Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 10.0)),
-                                    /// Animation text treva shop accept from login layout
-                                  
-                                  ],
+                                Container(
+                                  padding: EdgeInsets.only(
+                                      top: mediaQueryData.padding.top + 50.0,
+                                      bottom: 0.0),
+                                  child: Text(
+                                    'Sign Up',
+                                    style: TextStyle(
+                                        fontSize: 80.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
+                                
                                 Padding(
                                     padding:
                                         EdgeInsets.symmetric(vertical: 20.0)),
+
+                                        textFromField(
+                                  myController: name,
+                                  icon: Icons.account_circle,
+                                  password: false,
+                                  email: "Name",
+                                  inputType: TextInputType.emailAddress,
+                                ),
+                                Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 5.0)),
+
                                 /// TextFromField Email
                                 textFromField(
+                                  myController: email,
                                   icon: Icons.email,
                                   password: false,
                                   email: "Email",
@@ -125,6 +168,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
 
                                 /// TextFromField Password
                                 textFromField(
+                                  myController: password,
                                   icon: Icons.vpn_key,
                                   password: true,
                                   email: "Password",
@@ -134,8 +178,9 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                                 Padding(
                                     padding:
                                         EdgeInsets.symmetric(vertical: 5.0)),
-                                
+
                                 textFromField(
+                                  myController: passwordCon,
                                   icon: Icons.vpn_key,
                                   password: true,
                                   email: "Confirm Password",
@@ -145,14 +190,14 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                                 Padding(
                                     padding:
                                         EdgeInsets.symmetric(vertical: 5.0)),
-                                
+
                                 textFromField(
+                                  myController: hp,
                                   icon: Icons.phone_android,
                                   password: false,
                                   email: "Phone Number",
                                   inputType: TextInputType.number,
                                 ),
-                                
 
                                 /// Button Login
                                 FlatButton(
@@ -166,7 +211,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                                     child: Text(
                                       " Have Acount? Sign In",
                                       style: TextStyle(
-                                          color: Colors.white,
+                                          color: Colors.black87,
                                           fontSize: 13.0,
                                           fontWeight: FontWeight.w600,
                                           fontFamily: "Sans"),
@@ -187,13 +232,9 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                           ? InkWell(
                               splashColor: Colors.yellow,
                               onTap: () {
-                                setState(() {
-                                  tap = 1;
-                                });
-                                _PlayAnimation();
-                                return tap;
+                                _signUp();
                               },
-                              child: buttonBlackBottom(),
+                              child: ButtonBlackBottom(),
                             )
                           : new LoginAnimation(
                               animationController: sanimationController.view,
@@ -214,10 +255,12 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
 class textFromField extends StatelessWidget {
   bool password;
   String email;
+  final myController;
+
   IconData icon;
   TextInputType inputType;
 
-  textFromField({this.email, this.icon, this.inputType, this.password});
+  textFromField({this.email, this.icon, this.inputType, this.password, this.myController});
 
   @override
   Widget build(BuildContext context) {
@@ -226,10 +269,6 @@ class textFromField extends StatelessWidget {
       child: Container(
         height: 60.0,
         alignment: AlignmentDirectional.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14.0),
-            color: Colors.white,
-            boxShadow: [BoxShadow(blurRadius: 10.0, color: Colors.black12)]),
         padding:
             EdgeInsets.only(left: 20.0, right: 30.0, top: 0.0, bottom: 0.0),
         child: Theme(
@@ -238,8 +277,8 @@ class textFromField extends StatelessWidget {
           ),
           child: TextFormField(
             obscureText: password,
+            controller: myController,
             decoration: InputDecoration(
-                border: InputBorder.none,
                 labelText: email,
                 icon: Icon(
                   icon,
@@ -260,7 +299,7 @@ class textFromField extends StatelessWidget {
 }
 
 ///ButtonBlack class
-class buttonBlackBottom extends StatelessWidget {
+class ButtonBlackBottom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -271,7 +310,7 @@ class buttonBlackBottom extends StatelessWidget {
         child: Text(
           "Sign Up",
           style: TextStyle(
-              color: Colors.white,
+              color: Colors.black,
               letterSpacing: 0.2,
               fontFamily: "Sans",
               fontSize: 18.0,
@@ -279,10 +318,13 @@ class buttonBlackBottom extends StatelessWidget {
         ),
         alignment: FractionalOffset.center,
         decoration: BoxDecoration(
-            boxShadow: [BoxShadow(color: Colors.black38, blurRadius: 15.0)],
-            borderRadius: BorderRadius.circular(30.0),
-            gradient: LinearGradient(
-                colors: <Color>[Color(0xFF121940), Color(0xFF6E48AA)])),
+          borderRadius: BorderRadius.circular(20.0),
+            border: Border.all(
+              color: Colors.black,
+              style: BorderStyle.solid,
+              width: 1.0
+            ),
+        ),
       ),
     );
   }

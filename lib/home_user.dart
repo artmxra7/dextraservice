@@ -1,35 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:dextraservice/pages/profile.dart';
 import 'package:dextraservice/pages/home.dart';
-import 'package:dextraservice/pages/history.dart';
 import 'package:dextraservice/pages/pesanan.dart';
 import 'package:dextraservice/pages/simpan.dart';
 
 class Dashboard extends StatefulWidget {
-  bool harga = false;
-  bool home = false;
-
-  Dashboard({this.harga, this.home});
-
+ 
   @override
   _DashboardState createState() => _DashboardState();
 }
 
 class _DashboardState extends State<Dashboard> {
   int _cIndex = 0;
-  bool notif = false;
-  String data = "5";
-  int dataKeranjang;
-  bool hom = false;
-  var tokenFCM;
-  final FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
-
-  void _navigateToItemDetail(Map<String, dynamic> message) {
-    final String pagechooser = message['status'];
-    Navigator.pushNamed(context, pagechooser);
-  }
 
   void _incrementTab(index) {
     setState(() {
@@ -55,7 +38,6 @@ class _DashboardState extends State<Dashboard> {
     Home(),
     Simpan(),
     Pesanan(),
-    History(),
     Profile()
   ];
 

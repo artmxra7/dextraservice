@@ -115,8 +115,9 @@ class _loginScreenState extends State<loginScreen> with TickerProviderStateMixin
   /// Dispose animation controller
   @override
   void dispose() {
-    super.dispose();
     sanimationController.dispose();
+    super.dispose();
+    
   }
 
   /// Playanimation set forward reverse

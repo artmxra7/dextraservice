@@ -1,4 +1,5 @@
 import 'package:dextraservice/pages/mekanik.dart';
+import 'package:dextraservice/pages/mekanikFirst.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/allProduct.dart';
@@ -10,7 +11,7 @@ List<MainMenuItem> mainMenuItem = [
       icon: IconData(0xe801, fontFamily: 'mechanic'),
       colorBox: Colors.blue,
       iconColor: Colors.white,
-      screenWidget: Mekanik()),
+      screenWidget: MekanikFirst()),
   MainMenuItem(
       title: 'Spareparts',
       icon: IconData(0xe801, fontFamily: 'carparts'),

@@ -7,21 +7,33 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
-class CardAccount extends StatefulWidget {
- 
+class CardAccount extends StatefulWidget { 
+
+  final String users_name;
+
+  CardAccount({
+    this.users_name
+  });
+
 
   @override
   _CardAccountState createState() => _CardAccountState();
 }
 
-class _CardAccountState extends  State<CardAccount> {
+class _CardAccountState extends State<CardAccount> {
 
-  var name, email, hp, perusahaan, referal, npwp;
-  bool tampil = false;
+  var name;
+  String thisUsersName;
   int wallet = 0;
+
+  var isLoading = false;
+  
   
   Future<List<String>> ambilData() async {
 
+    setState(() {
+         isLoading = true;
+    });
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     String url = "https://dextra.hattadev.com/public/api/user/profile";
@@ -33,33 +45,46 @@ class _CardAccountState extends  State<CardAccount> {
         "Accept": "application/json"
       },
     );
+    
+    var response = await http.get(url);    
+    
+    if (response.statusCode == 200){
 
     var dataBanner = json.decode(hasil.body);
     var rest = dataBanner["data"];
-    this.setState(() {});
-    print("data status : ${dataBanner}");
-    print("data status : ${dataBanner['data']}");
+    // print("data status : ${dataBanner}");
+    // print("data status : ${dataBanner['data']}");
+   
 
     name = rest['users_name'];
-      email = rest['users_email'];
-      hp = rest['users_hp'];
-      perusahaan = rest['users_company'];
-      referal = rest['users_referral_code'];
-      npwp = rest['users_npwp'];
+
+    prefs.setString('users_name', name);
+
+    print("data status : ${name}");
+ 
+
+     setState(() {
+      isLoading = false; //Data has loaded
+    });
+    
+    }
 
   }
   
   @override
-  void initState(){
-this.ambilData();
-
+  void initState(){    
+    this.ambilData();    
     super.initState();
   }
 
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return isLoading ? Center(
+      child: CircularProgressIndicator(),
+    ) : Container(
+
+      child: Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ListTile(
         title: Text(
@@ -100,6 +125,8 @@ this.ambilData();
           ],
         ),
       ),
+    ),
     );
+    
   }
 }

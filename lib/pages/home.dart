@@ -1,13 +1,10 @@
 import 'dart:convert';
 
-import 'package:dextraservice/pages/AllProduct.dart';
+import 'package:dextraservice/pages/CardAccount.dart';
 import 'package:dextraservice/pages/cartAccount.dart';
 import 'package:dextraservice/pages/mainMenu.dart';
 import 'package:dextraservice/pages/news.dart';
-import 'package:dextraservice/pages/promotion.dart';
-import 'package:dextraservice/pages/screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -23,6 +20,22 @@ class Home extends StatefulWidget {
 
 
 class _MyHomePageState extends State<Home> {
+
+  var name;
+
+ 
+  Future<List<String>> onDoneLoading() async {
+  final prefs = await SharedPreferences.getInstance();
+
+   name = prefs.getString('users_name');
+  }
+
+   @override
+  void initState() {
+    super.initState();
+    onDoneLoading();
+  }
+  
   @override
   Widget build(BuildContext context) {
     
@@ -49,13 +62,10 @@ class _MyHomePageState extends State<Home> {
             CardAccount(),          
             MainMenu(),
             Divider(),
-            //Promotion(),
             News(),
           ],
         ),
       ),
-
-     
     );
   }
 

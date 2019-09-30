@@ -1,12 +1,15 @@
 import 'package:dextraservice/Library/intro_views_flutter-2.4.0/lib/Models/page_view_model.dart';
 import 'package:dextraservice/Library/intro_views_flutter-2.4.0/lib/intro_views_flutter.dart';
 import 'package:dextraservice/home_user.dart';
+import 'package:dextraservice/pages/login.dart';
 import 'package:flutter/material.dart';
 
 class onBoarding extends StatefulWidget {
   @override
   _onBoardingState createState() => _onBoardingState();
 }
+
+
 
 var _fontHeaderStyle = TextStyle(
   fontFamily: "Popins",
@@ -93,6 +96,7 @@ final pages = [
 ];
 
 class _onBoardingState extends State<onBoarding> {
+
   @override
   Widget build(BuildContext context) {
     return IntroViewsFlutter(
@@ -101,7 +105,7 @@ class _onBoardingState extends State<onBoarding> {
       skipText: Text("SKIP",style: _fontDescriptionStyle.copyWith(color: Colors.deepPurpleAccent,fontWeight: FontWeight.w800,letterSpacing: 1.0),),
       doneText: Text("DONE",style: _fontDescriptionStyle.copyWith(color: Colors.deepPurpleAccent,fontWeight: FontWeight.w800,letterSpacing: 1.0),),
       onTapDoneButton: (){
-        Navigator.of(context).pushReplacement(PageRouteBuilder(pageBuilder: (_,__,___)=> new Dashboard(),
+        Navigator.of(context).pushReplacement(PageRouteBuilder(pageBuilder: (_,__,___)=> new loginScreen(),
         transitionsBuilder: (_,Animation<double> animation,__,Widget widget){
           return Opacity(
             opacity: animation.value,

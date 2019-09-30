@@ -3,6 +3,3 @@
 class LoginControllerBloc implements  {
   
 }
-
-
-
