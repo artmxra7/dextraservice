@@ -1,7 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:dextraservice/Model/MasterJobList.dart';
+import 'package:dextraservice/Model/response.dart';
 import 'package:dextraservice/pages/mekanik.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MekanikFirst extends StatefulWidget {
   @override
@@ -9,20 +14,51 @@ class MekanikFirst extends StatefulWidget {
 }
 
 class _MekanikFirstState extends State<MekanikFirst> {
-  List<String> list = [
-    'Dart',
-    'Java',
-    'C',
-    'C++',
-    'C#',
-    'Kotlin',
-    'JavaScript'
-  ];
-  String item = 'Dart';
+  JobList selectedJobList = null;
 
-  void onChanged(String value) {
+  List<JobList> jobList = new List<JobList>();
+
+  Future<List<JobList>> _getJobList() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    String url = "https://dextra.hattadev.com/public/api/user/job_categories";
+
+    http.Response hasil = await http.get(Uri.encodeFull(url), headers: {
+      "Authorization": "Bearer ${token}",
+      "Accept": "application/json"
+    });
+
+    var thisData = json.decode(hasil.body);
+    var restData = thisData["data"];
+
+    if (thisData["code"] == 0) {
+      
+
+      jobList = new List<JobList>();
+
+      for (var jobs in restData) {
+        String id = jobs["job_categories_code"].toString();
+        String name = jobs["name"].toString();
+        jobList.add(new JobList(id: id, name: name));
+      }
+      setState(() {});
+    } else {
+      
+      throw Exception('Failed to load internet');
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    this._getJobList();
+    
+  }
+
+  void onChanged(value) {
     setState(() {
-      item = value;
+      selectedJobList = value;
     });
   }
 
@@ -66,7 +102,7 @@ class _MekanikFirstState extends State<MekanikFirst> {
                 InkWell(
                   onTap: () {
                     Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => Mekanik()));
+                        MaterialPageRoute(builder: (context) => new Mekanik(jobs: selectedJobList.name)));
                   },
                   child: Padding(
                     padding: EdgeInsets.all(30.0),
@@ -102,20 +138,21 @@ class _MekanikFirstState extends State<MekanikFirst> {
   }
 
   Widget itemDropDown() {
-    return new DropdownButton(
+    return new DropdownButton<JobList>(
       isExpanded: true,
-      value: item,
-      items: list.map((String val) {
-        return DropdownMenuItem(
-          value: val,
-          child: Row(
-            children: <Widget>[Text(val)],
-          ),
+      value: selectedJobList,
+      items: jobList.map((JobList map) {
+        return DropdownMenuItem<JobList>(
+          value: map,
+          child: new Text(map.name, style: new TextStyle(color: Colors.black)),
         );
       }).toList(),
-      hint: new Text("Select City"),
-      onChanged: (String value) {
-        onChanged(value);
+      hint: new Text("Pilih Jenis Bantuan"),
+      onChanged: (value) {
+        setState(() {
+          selectedJobList = value;
+          print("Selected value " + selectedJobList.name);
+        });
       },
     );
   }

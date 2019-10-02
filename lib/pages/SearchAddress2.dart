@@ -1,5 +1,6 @@
 import 'package:dextraservice/Blocs/place_bloc.dart';
 import 'package:dextraservice/Model/placeItem.dart';
+import 'package:dextraservice/pages/mekanik3.dart';
 import 'package:dextraservice/theme/style.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -47,8 +48,9 @@ class _SearchAddress2State extends State<SearchAddress2> {
   }
 
   navigator(){
- 
-    print(dataFrom);
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (context) => MekanikTiga(thisLocation: dataFrom,))
+    );   
   }
 
 
@@ -117,6 +119,7 @@ class _SearchAddress2State extends State<SearchAddress2> {
                                   onTap: (){
                                     setState(() {
                                       inputFrom = true;
+                                      inputTo = true;
                                       print(inputTo);
                                     });
                                   },

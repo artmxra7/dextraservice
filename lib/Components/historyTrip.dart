@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dextraservice/theme/style.dart';
 
 class HistoryTrip extends StatelessWidget {
-  String fromAddress,toAddress;
+  String fromAddress;
 
   HistoryTrip({this.fromAddress});
 
@@ -20,51 +20,48 @@ class HistoryTrip extends StatelessWidget {
 //              ),
 //            ]),
         child: new Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            new Expanded(
-              flex: 1,
-              child: new Column(
-                children: <Widget>[
-                  new Icon(Icons.my_location,size: 20.0,color: Colors.blue,),
-                ],
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        new Expanded(
+          flex: 1,
+          child: new Column(
+            children: <Widget>[
+              new Icon(
+                Icons.my_location,
+                size: 20.0,
+                color: Colors.blue,
               ),
-            ),
-            new Expanded(
-                flex: 5,
-                child: new Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    new Container(
-                      height: 50.0,
-                      width: MediaQuery.of(context).size.width - 50,
-                      color: Colors.white,
-                      child: new Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            fromAddress != null ? fromAddress : '',
-                            overflow: TextOverflow.ellipsis,
-                            style: textStyle,
-                          ),
-                        ],
+            ],
+          ),
+        ),
+        new Expanded(
+            flex: 5,
+            child: new Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                new Container(
+                  height: 50.0,
+                  width: MediaQuery.of(context).size.width - 50,
+                  color: Colors.white,
+                  child: new Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        fromAddress != null ? fromAddress : '',
+                        overflow: TextOverflow.ellipsis,
+                        style: textStyle,
                       ),
-                    ),
-
-                    
-                  ],
-                )
-            ),
-            new Expanded(
-                flex: 1,
-                child: Text('')
-            )
-          ],
-        )
-    );
+                    ],
+                  ),
+                ),
+              ],
+            )),
+        new Expanded(flex: 1, child: Text(''))
+      ],
+    ));
   }
 }

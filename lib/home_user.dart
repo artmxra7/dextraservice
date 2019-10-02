@@ -4,6 +4,8 @@ import 'package:dextraservice/pages/profile.dart';
 import 'package:dextraservice/pages/home.dart';
 import 'package:dextraservice/pages/pesanan.dart';
 import 'package:dextraservice/pages/simpan.dart';
+import 'router.dart' as router;
+
 
 class Dashboard extends StatefulWidget {
  
@@ -13,6 +15,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   int _cIndex = 0;
+  
 
   void _incrementTab(index) {
     setState(() {
