@@ -1,4 +1,6 @@
+import 'package:dextraservice/pages/login.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -22,6 +24,19 @@ var _txtCategory = _txt.copyWith(
     fontSize: 14.5, color: Colors.black54, fontWeight: FontWeight.w500);
 
 class _ProfilState extends State<Profile> {
+  SharedPreferences _prefs;
+
+  doLogout() async {
+    _prefs = await SharedPreferences.getInstance();
+
+    _prefs.remove('isLogin');
+    _prefs.remove('token');
+    _prefs.remove('users_name');
+
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => loginScreen()));
+  }
+
   @override
   Widget build(BuildContext context) {
     /// Declare MediaQueryData
@@ -29,49 +44,29 @@ class _ProfilState extends State<Profile> {
 
     /// To Sett PhotoProfile,Name and Edit Profile
     var _profile = Padding(
-      padding:  EdgeInsets.only(top: 185.0, ),
+      padding: EdgeInsets.only(
+        top: 15.0,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Container(
-
-          ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              height: 100.0,
-              width: 100.0,
-              decoration: BoxDecoration(
+          Container(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                height: 100.0,
+                width: 100.0,
+                decoration: BoxDecoration(
                   border: Border.all(color: Colors.white, width: 2.5),
                   shape: BoxShape.circle,
-                  image: DecorationImage(
-                      image: AssetImage("assets/img/backgroundgirl.png"))),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 5.0),
-              child: Text(
-                "Erwin Rahayu",
-                style: _txtName,
-              ),
-            ),
-            InkWell(
-              onTap: null,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 0.0),
-                child: Text(
-                  "Edit Profile",
-                  style: _txtEdit,
                 ),
               ),
-            ),
-          ],
-        ),
-        Container(
-
-        ),
-      ],
+            ],
+          ),
+          Container(),
+        ],
       ),
     );
 
@@ -80,110 +75,15 @@ class _ProfilState extends State<Profile> {
         color: Colors.white,
         child: Stack(
           children: <Widget>[
-            /// Setting Header Banner
-            Container(
-              height: 240.0,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage("assets/img/headerProfile.png"),
-                      fit: BoxFit.cover)),
-            ),
             /// Calling _profile variable
             _profile,
             Padding(
-              padding: const EdgeInsets.only(top: 360.0),
+              padding: const EdgeInsets.only(top: 30.0),
               child: Column(
                 /// Setting Category List
                 children: <Widget>[
                   /// Call category class
-                  category(
-                    txt: "Notification",
-                    padding: 35.0,
-                    image: "assets/icon/notification.png",
-                    tap: () {
-                      
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top: 20.0, left: 85.0, right: 30.0),
-                    child: Divider(
-                      color: Colors.black12,
-                      height: 2.0,
-                    ),
-                  ),
-                  category(
-                    txt: "Payments",
-                    padding: 35.0,
-                    image: "assets/icon/creditAcount.png",
-                    tap: () {
-                      
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top: 20.0, left: 85.0, right: 30.0),
-                    child: Divider(
-                      color: Colors.black12,
-                      height: 2.0,
-                    ),
-                  ),
-                  category(
-                    txt: "Message",
-                    padding: 26.0,
-                    image: "assets/icon/chat.png",
-                    tap: () {
-                     
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top: 20.0, left: 85.0, right: 30.0),
-                    child: Divider(
-                      color: Colors.black12,
-                      height: 2.0,
-                    ),
-                  ),
-                  category(
-                    txt: "My Orders",
-                    padding: 23.0,
-                    image: "assets/icon/truck.png",
-                    tap: () {
-                      
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top: 20.0, left: 85.0, right: 30.0),
-                    child: Divider(
-                      color: Colors.black12,
-                      height: 2.0,
-                    ),
-                  ),
-                  category(
-                    txt: "Setting Acount",
-                    padding: 30.0,
-                    image: "assets/icon/setting.png",
-                    tap: () {
-                      
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top: 20.0, left: 85.0, right: 30.0),
-                    child: Divider(
-                      color: Colors.black12,
-                      height: 2.0,
-                    ),
-                  ),
-                  category(
-                    txt: "Call Center",
-                    padding: 30.0,
-                    image: "assets/icon/callcenter.png",
-                    tap: () {
-                      
-                    },
-                  ),
+
                   Padding(
                     padding: const EdgeInsets.only(
                         top: 20.0, left: 85.0, right: 30.0),
@@ -194,10 +94,10 @@ class _ProfilState extends State<Profile> {
                   ),
                   category(
                     padding: 38.0,
-                    txt: "About Apps",
+                    txt: "Logout",
                     image: "assets/icon/aboutapp.png",
                     tap: () {
-                     
+                      doLogout();
                     },
                   ),
                   Padding(padding: EdgeInsets.only(bottom: 20.0)),

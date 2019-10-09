@@ -65,7 +65,6 @@ class _MekanikFirstState extends State<MekanikFirst> {
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
-    mediaQueryData.devicePixelRatio;
     mediaQueryData.size.width;
     mediaQueryData.size.height;
     return Scaffold(
@@ -102,7 +101,7 @@ class _MekanikFirstState extends State<MekanikFirst> {
                 InkWell(
                   onTap: () {
                     Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => new Mekanik(jobs: selectedJobList.name)));
+                        MaterialPageRoute(builder: (context) => new Mekanik(jobs: selectedJobList.name, jobscode: selectedJobList.id)));
                   },
                   child: Padding(
                     padding: EdgeInsets.all(30.0),
@@ -151,7 +150,7 @@ class _MekanikFirstState extends State<MekanikFirst> {
       onChanged: (value) {
         setState(() {
           selectedJobList = value;
-          print("Selected value " + selectedJobList.name);
+          print("Selected value " + selectedJobList.id);
         });
       },
     );

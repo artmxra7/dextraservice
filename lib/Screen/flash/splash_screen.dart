@@ -14,7 +14,7 @@ class SplashScreen extends StatefulWidget {
 /// Component UI
 class _SplashScreenState extends State<SplashScreen> {
   startTime() async {
-    return new Timer(Duration(milliseconds: 4500), onDoneLoading);
+    return new Timer(Duration(milliseconds: 100), onDoneLoading);
   }
 
   /// Checked Login or Not
