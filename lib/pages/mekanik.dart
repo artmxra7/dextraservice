@@ -8,9 +8,10 @@ import 'package:location/location.dart' as prefix;
 import 'package:progress_dialog/progress_dialog.dart';
 
 class Mekanik extends StatefulWidget {
-  final String jobs;
+  final String jobs, jobscode;
   Mekanik ({
-    this.jobs
+    this.jobs,
+    this.jobscode
   });
   
 
@@ -102,7 +103,8 @@ class _MekanikState extends State<Mekanik> {
                         MaterialPageRoute(builder: (context) => MekanikDua(jobs: widget.jobs,
                         brand: brand.text,
                         model: model.text,
-                        serialNumber: serialNumber.text,)));
+                        serialNumber: serialNumber.text,
+                        jobcode: widget.jobscode,)));
                   },
                   child: Padding(
                     padding: EdgeInsets.all(30.0),

@@ -4,8 +4,8 @@ import 'package:dextraservice/pages/mekanik3.dart';
 import 'package:flutter/material.dart';
 
 class MekanikDua extends StatefulWidget {
-  final String jobs, brand, model, serialNumber;
-  MekanikDua({this.jobs, this.brand, this.model, this.serialNumber});
+  final String jobs, jobcode, brand, model, serialNumber;
+  MekanikDua({this.jobs, this.jobcode, this.brand, this.model, this.serialNumber});
 
 
   @override
@@ -76,6 +76,7 @@ class _MekanikDuaState extends State<MekanikDua> {
                           model: widget.model,
                           serialNumber: widget.serialNumber,
                           permasalahan: permasalahan.text,
+                          jobscode: widget.jobcode,
                         )));
                   },
                   child: Padding(

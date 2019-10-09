@@ -9,17 +9,19 @@ import 'package:location/location.dart' as prefix;
 import 'package:progress_dialog/progress_dialog.dart';
 
 class OrderConfirm extends StatefulWidget {
-  final String jobs, brand, model, serialNumber, permasalahan, lokasi, latitude, longtitude;
+  final String jobs, jobscode, brand, model, serialNumber, permasalahan, lokasi, latitude, longtitude, detailalamat;
 
   OrderConfirm(
       {this.jobs,
+      this.jobscode,
       this.brand,
       this.model,
       this.serialNumber,
       this.permasalahan,
       this.lokasi,
       this.latitude,
-      this.longtitude});
+      this.longtitude,
+      this.detailalamat});
 
   @override
   _OrderConfirmState createState() => _OrderConfirmState();
@@ -32,7 +34,7 @@ class _OrderConfirmState extends State<OrderConfirm> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("nama ${widget.lokasi}");
+    print("nama ${widget.latitude}");
   }
 
   @override
@@ -210,6 +212,30 @@ class _OrderConfirmState extends State<OrderConfirm> {
                   ],
                 ),
 
+                Column(
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                  padding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 0.0),
+                  child: Text(
+                    'Detail Lokasi:',
+                   style:
+                        TextStyle(fontSize: 14.0,),
+                  ),
+                ),
+
+                Container(
+                  padding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 0.0),
+                  child: Text(
+                    '${widget.detailalamat}',
+                    style:
+                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  ),
+                ),
+
+                  ],
+                ),
+
 
           
 
@@ -220,6 +246,15 @@ class _OrderConfirmState extends State<OrderConfirm> {
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => FindMekanik(
+                          jobscode: widget.jobscode,
+                          brand: widget.brand,
+                          model: widget.model,
+                          serialNumber: widget.serialNumber,
+                          permasalahan: widget.permasalahan,
+                          lokasi: widget.lokasi,
+                          detailokasi: widget.detailalamat,
+                          latitude: widget.latitude,
+                          longtitude: widget.longtitude,
                           
                             )));
                   },

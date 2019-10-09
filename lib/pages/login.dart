@@ -8,6 +8,7 @@ import 'package:dextraservice/pages/LoginAnimation.dart';
 import 'package:dextraservice/pages/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class loginScreen extends StatefulWidget {
@@ -17,6 +18,8 @@ class loginScreen extends StatefulWidget {
 
 /// Component Widget this layout UI
 class _loginScreenState extends State<loginScreen> with TickerProviderStateMixin {
+
+   ProgressDialog pr;
   //Animation Declaration
   AnimationController sanimationController;
   static const VariableGlobals = VariableGlobal.URL_BASE;
@@ -54,7 +57,10 @@ class _loginScreenState extends State<loginScreen> with TickerProviderStateMixin
   }
 
   Future<List> _login() async {
-    print("OKE");
+
+      pr = new ProgressDialog(context, ProgressDialogType.Normal);
+    pr.setMessage("Please wait....");
+    pr.show();
 
     final responseLogin =
         await http.post("https://dextra.hattadev.com/public/api/auth/login", body: {
@@ -67,11 +73,13 @@ class _loginScreenState extends State<loginScreen> with TickerProviderStateMixin
     var dataResponse = json.decode(responseLogin.body);
     var data = dataResponse["data"];
     if (dataResponse["code"] == 0 && data["user_type"] == "user") {
+      pr.hide();
       print("data token : ${dataResponse["code"]}");
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => Dashboard()));
     } else {
-      _alertdialog("gagal login");
+      pr.hide();
+      _alertdialog("$data");
     }
 
     print("data status : ${responseLogin.statusCode}");
@@ -98,18 +106,14 @@ class _loginScreenState extends State<loginScreen> with TickerProviderStateMixin
             }
           });
 
-    super.initState();
 
     currentLocation['latitude'] = 0.0;
     currentLocation['longitude'] = 0.0;
 
     initPlatformState();
-    _locationSubscription =
-         _locationService.onLocationChanged().listen((LocationData currentLocation) {
-      setState(() {
-        _currentLocation = currentLocation;
-      });
-    });
+   
+    
+    super.initState();
   }
 
   /// Dispose animation controller

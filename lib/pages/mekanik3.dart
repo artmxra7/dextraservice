@@ -13,11 +13,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as prefix;
 
 class MekanikTiga extends StatefulWidget {
-  final String jobs, brand, model, serialNumber, permasalahan;
+  final String jobs, jobscode, brand, model, serialNumber, permasalahan;
+
+ 
 
   List<Map<String, dynamic>> thisLocation;
   MekanikTiga(
       {this.jobs,
+      this.jobscode,
       this.brand,
       this.model,
       this.serialNumber,
@@ -30,6 +33,8 @@ class MekanikTiga extends StatefulWidget {
 
 class _MekanikTigaState extends State<MekanikTiga> {
   Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
+
+    TextEditingController detailalamat = new TextEditingController();
 
   GoogleMapController _mapController;
   CameraPosition _position;
@@ -222,6 +227,7 @@ class _MekanikTigaState extends State<MekanikTiga> {
                       new ListTile(
                         leading: const Icon(Icons.person_pin_circle),
                         title: new TextField(
+                          controller: detailalamat,
                           decoration: new InputDecoration(
                             hintText: "Detail Alamat, Telephone",
                           ),
@@ -281,6 +287,7 @@ class _MekanikTigaState extends State<MekanikTiga> {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => OrderConfirm(
                               jobs: widget.jobs,
+                              jobscode: widget.jobscode,
                               brand: widget.brand,
                               model: widget.model,
                               serialNumber: widget.serialNumber,
@@ -288,6 +295,7 @@ class _MekanikTigaState extends State<MekanikTiga> {
                               permasalahan: widget.permasalahan,
                               latitude: _position.target.latitude.toString(),
                               longtitude: _position.target.longitude.toString(),
+                              detailalamat: detailalamat.text,
 
                             )));
                   },

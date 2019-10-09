@@ -10,8 +10,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FindMekanik extends StatefulWidget {
-  final String jobs, brand, model, serialNumber, permasalahan, lokasi, latitude, longtitude;
-  FindMekanik({this.jobs, this.brand, this.model, this.serialNumber, this.permasalahan, this.lokasi, this.latitude, this.longtitude});
+  final String jobscode, brand, model, serialNumber, permasalahan, lokasi, latitude, longtitude, detailokasi;
+  FindMekanik({this.jobscode, this.brand, this.model, this.serialNumber, this.permasalahan, this.lokasi, this.latitude, this.longtitude, this.detailokasi});
   @override
   _FindMekanikState createState() => _FindMekanikState();
 }
@@ -63,17 +63,18 @@ class _FindMekanikState extends State<FindMekanik> {
     Map<String, String> requestHeaders = {
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization": "Bearer ${token}',
+      'Authorization': 'Bearer ${token}',
     };
 
     final responseLogin = await http.post(
-        "https://dextra.hattadev.com/public/api/user/register/finish",
+        "https://dextra.hattadev.com/public/api/user/job/create",
         body: {
-          "job_category_id": widget.jobs,
+          "job_category_id": widget.jobscode,
           "brand": widget.brand,
           "model": widget.model,
           "serialNumber": widget.serialNumber,
           "description": widget.permasalahan,
+          "location_description": widget.detailokasi,
           "location_name": widget.lokasi,
           "latitude" : widget.latitude,
           "longtitude": widget.longtitude
